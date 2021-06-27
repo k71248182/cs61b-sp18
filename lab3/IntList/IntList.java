@@ -111,14 +111,14 @@ public class IntList {
      * as an input, returns null.
      */
     public static IntList reverse(IntList L){
-        IntList ListToBeChanged = L;
+        IntList listToBeChanged = L;
         IntList newList = null;
-        while (ListToBeChanged != null){
-            IntList ItemsNotReversed = ListToBeChanged.rest;
-            IntList MoveFront = ListToBeChanged;
-            MoveFront.rest = newList;
-            newList = MoveFront;            // update newList for next iteration
-            ListToBeChanged = ItemsNotReversed;
+        while (listToBeChanged != null){
+            IntList itemsNotReversed = listToBeChanged.rest;
+            IntList moveFront = listToBeChanged;
+            moveFront.rest = newList;
+            newList = moveFront;            // update newList for next iteration
+            listToBeChanged = itemsNotReversed;
         }
         return newList;
     }
