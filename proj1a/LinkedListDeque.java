@@ -4,10 +4,10 @@ public class LinkedListDeque<T> {
     private int size;
 
     private class TNode {
-        public T item;
-        public TNode next;
-        public TNode prev;
-        public TNode(TNode p, T t, TNode n) {
+        private T item;
+        private TNode next;
+        private TNode prev;
+        private TNode(TNode p, T t, TNode n) {
             item = t;
             next = n;
             prev = p;
@@ -18,13 +18,6 @@ public class LinkedListDeque<T> {
         sentinel = new TNode(null, null, null);
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
-    }
-
-    public LinkedListDeque(T x) {
-        sentinel = new TNode(null, null, null);
-        sentinel.next = new TNode(sentinel, x, sentinel);
-        sentinel.prev = sentinel.next;
-        size = 1;
     }
 
     /**
@@ -52,7 +45,7 @@ public class LinkedListDeque<T> {
      * @return
      */
     public  boolean isEmpty() {
-        if (size == 0){
+        if (size == 0) {
             return true;
         }
         return false;
