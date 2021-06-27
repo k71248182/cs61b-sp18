@@ -29,6 +29,7 @@ public class ArithmeticTest {
     }
 
     /* Run the unit tests in this file. */
+    /* Only show failed tests: change the mode argument from “all” to “failed”. */
     public static void main(String... args) {        
         jh61b.junit.TestRunner.runTests("all", ArithmeticTest.class);
     }
