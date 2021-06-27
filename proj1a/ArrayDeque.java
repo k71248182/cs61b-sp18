@@ -51,10 +51,11 @@ public class ArrayDeque<T> {
      * Resized array always starts from position zero */
     private void resize(int capacity) {
         T[] newItems = (T []) new Object[capacity];
-        if (start + size < items.length) {
+        if (start + size <= items.length) {
             System.arraycopy(items, start, newItems, 0, size);
         } else {
             System.arraycopy(items, start, newItems, 0, items.length - start);
+
             System.arraycopy(items, 0, newItems, items.length - start, end + 1);
         }
         items = newItems;
@@ -130,7 +131,7 @@ public class ArrayDeque<T> {
     }
 
     /** Return the number of items in the deque. */
-    public int size(){
+    public int size() {
         return size;
     }
 
