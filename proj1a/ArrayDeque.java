@@ -16,19 +16,25 @@ public class ArrayDeque<T> {
     /** Helper function:
      * compute the index immediately before a given index. */
     private int prevIndex(int index) {
-        if (index - 1 > 0) {
-            return index - 1;
+        if (size == 0) {
+            return index;
         }
-        return index - 1 + items.length;
+        if (index == 0) {
+            return items.length - 1;
+        }
+        return index - 1;
     }
 
     /** Helper function:
      * compute the index immediately after a given index. */
     private int nextIndex(int index) {
-        if (index + 1 < items.length) {
-            return index + 1;
+        if (size == 0) {
+            return index;
         }
-        return index + 1 - items.length;
+        if (index + 1 == items.length) {
+            return 0;
+        }
+        return index + 1;
     }
 
     /** Helper function:
@@ -59,7 +65,7 @@ public class ArrayDeque<T> {
     /** Helper function:
      * calculate the optimal array size based on deque length. */
     private void optimalCapacity() {
-        if (size < items.length * 0.25) {
+        if (size > 0 && size < items.length * 0.25) {
             int capacity = (int) Math.round(items.length * 0.5) + 1;
             resize(capacity);
         }
@@ -91,13 +97,13 @@ public class ArrayDeque<T> {
 
     /** Remove and return the item at the front of the deque. */
     public T removeFirst() {
-        if (size == 0){
+        if (size == 0) {
             return null;
         }
         T removedItem = items[start];
         items[start] = null;
-        start = nextIndex(start);
         size -= 1;
+        start = nextIndex(start);
         optimalCapacity();
         return removedItem;
     }
@@ -109,8 +115,8 @@ public class ArrayDeque<T> {
         }
         T removedItem = items[end];
         items[end] = null;
-        end = prevIndex(end);
         size -= 1;
+        end = prevIndex(end);
         optimalCapacity();
         return removedItem;
     }
