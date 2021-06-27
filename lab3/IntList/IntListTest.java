@@ -67,7 +67,7 @@ public class IntListTest {
     }
 
     @Test
-    public void testReverse(){
+    public void testReverse() {
         IntList A = IntList.of(1, 2, 3, 4, 5);
         IntList B = IntList.of(4, 5, 6);
         IntList exp = IntList.of(5, 4, 3, 2, 1);
@@ -77,7 +77,7 @@ public class IntListTest {
     }
 
     @Test
-    public void testReverse2(){
+    public void testReverse2() {
         IntList A = IntList.of(1, 2, 3, 4, 5);
         IntList B = IntList.of(4, 5, 6);
         IntList exp = IntList.of(5, 4, 3, 2, 1);
