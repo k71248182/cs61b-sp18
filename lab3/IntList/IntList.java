@@ -83,10 +83,10 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         IntList p = A;
-        if (A == null){
+        if (A == null) {
             p = B;
         } else {
-            while (A.rest != null){
+            while (A.rest != null) {
                 A = A.rest;
             }
             A.rest = B;
@@ -99,7 +99,7 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
-        if (A == null){
+        if (A == null) {
             return B;
         }
         return new IntList(A.first, catenate(A.rest, B));
@@ -110,10 +110,10 @@ public class IntList {
      * This method is destructive. if given null
      * as an input, returns null.
      */
-    public static IntList reverse(IntList L){
+    public static IntList reverse(IntList L) {
         IntList listToBeChanged = L;
         IntList newList = null;
-        while (listToBeChanged != null){
+        while (listToBeChanged != null) {
             IntList itemsNotReversed = listToBeChanged.rest;
             IntList moveFront = listToBeChanged;
             moveFront.rest = newList;
@@ -129,8 +129,8 @@ public class IntList {
      * as an input, returns null.
      * Use recursion: each time reverse the arrow between two nodes.
      */
-    public static IntList reverse2(IntList L){
-        if (L == null || L.rest == null){
+    public static IntList reverse2(IntList L) {
+        if (L == null || L.rest == null) {
             return L;
         }
         IntList reversed = reverse2(L.rest);
