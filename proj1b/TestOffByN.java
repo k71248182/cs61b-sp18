@@ -11,9 +11,9 @@ public class TestOffByN {
         assertFalse(ob5.equalChars('f', 'h'));
         assertFalse(ob5.equalChars('a', 'a'));
 
-       CharacterComparator ob0 = new OffByN(0);
-       assertFalse(ob0.equalChars('a', 'f'));
-       assertTrue(ob0.equalChars('a', 'a'));
+        CharacterComparator ob0 = new OffByN(0);
+        assertFalse(ob0.equalChars('a', 'f'));
+        assertTrue(ob0.equalChars('a', 'a'));
 
     }
 
