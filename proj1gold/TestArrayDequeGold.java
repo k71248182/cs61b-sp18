@@ -65,8 +65,8 @@ public class TestArrayDequeGold {
                         dSolution.isEmpty(), dStudent.isEmpty());
                 if (dSolution.isEmpty() == false) {
                     assertEquals(actionHistory,
-                            dSolution.removeFirst(),
-                            dStudent.removeFirst());
+                            dSolution.removeLast(),
+                            dStudent.removeLast());
                 }
             }
         }
