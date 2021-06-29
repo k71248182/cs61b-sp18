@@ -20,7 +20,7 @@ public class TestPalindrome {
     public void testIsPalindrome() {
 
         // test corner case
-        assertTrue(palindrome.isPalindrome(null));
+        assertTrue(palindrome.isPalindrome(""));
         assertTrue(palindrome.isPalindrome("a"));
 
         // test alphabetical and non-alphabetical characters
@@ -49,7 +49,7 @@ public class TestPalindrome {
         CharacterComparator offByOne = new OffByOne();
 
         // test corner case
-        assertTrue(palindrome.isPalindrome(null, offByOne));
+        assertTrue(palindrome.isPalindrome("", offByOne));
         assertTrue(palindrome.isPalindrome("a", offByOne));
 
         // test alphabetical and non-alphabetical characters
@@ -77,10 +77,10 @@ public class TestPalindrome {
         CharacterComparator offByOne = new OffByN(-1);
 
         // corner case
-        assertTrue(palindrome.isPalindrome(null, ob5));
+        assertTrue(palindrome.isPalindrome("", ob5));
         assertTrue(palindrome.isPalindrome("a", ob5));
 
-        assertTrue(palindrome.isPalindrome(null, offByOne));
+        assertTrue(palindrome.isPalindrome("", offByOne));
         assertTrue(palindrome.isPalindrome("a", offByOne));
 
         // Test when N = 5
