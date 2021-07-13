@@ -12,8 +12,8 @@ import java.util.Random;
  */
 public class Canvas {
 
-    private static final int MINROOMCOUNT = 15;
-    private static final int MAXROOMCOUNT = 30;
+    private static final int MINROOMCOUNT = 25;
+    private static final int MAXROOMCOUNT = 50;
     private static final int MAXTRY = 20;
     private static final int MAXHALLWAY = 8;
 
@@ -37,8 +37,14 @@ public class Canvas {
         return tiles;
     }
 
+    public void createWorld() {
+        addRandomRooms();
+        addHallways();
+        closeOpenHallways();
+    }
+
     /** Add random number of random rooms on canvas. */
-    public void addRandomRooms() {
+    private void addRandomRooms() {
         int count = nextRandomInt(MINROOMCOUNT, MAXROOMCOUNT);
         rooms = new Room[count];
         for (int i = 0; i < count; i += 1) {
@@ -52,7 +58,7 @@ public class Canvas {
      * For each room, add a hallway on the right wall if possible.
      * For each room, add a hallway on the top wall if possible.
      */
-    public void addHallways() {
+    private void addHallways() {
         for (int i = 0; i < rooms.length; i += 1) {
             addHallwayR(rooms[i].walls[2]);
         }
@@ -65,7 +71,7 @@ public class Canvas {
      * If there is a floor tile directly connected to nothing,
      * create a wall between them.
      */
-    public void closeOpenHallways() {
+    private void closeOpenHallways() {
         for (int x = 0; x < maxWidth; x += 1) {
             for (int y = 0; y < maxHeight; y += 1) {
                 if (tiles[x][y] == Tileset.FLOOR) {
@@ -94,7 +100,7 @@ public class Canvas {
     private void floorSurrounding(Position p) {
         Position[] sp = surroundingPositions(p);
         for (Position s : sp) {
-            if (s.x > 0 && s.y > 0 && s.x < maxWidth && s.y < maxHeight) {
+            if (s.x >= 0 && s.y >= 0 && s.x < maxWidth && s.y < maxHeight) {
                 if (tiles[s.x][s.y] == Tileset.NOTHING) {
                     tiles[s.x][s.y] = Tileset.WALL;
                 }
