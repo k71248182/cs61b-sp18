@@ -4,6 +4,7 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 import java.util.Random;
+import java.util.ArrayList;
 
 /** The Canvas object is used to represent the whole world.
  * Everything in the world will be drawn on the same canvas.
@@ -19,7 +20,7 @@ public class Canvas {
     private static int maxWidth;
     private static int maxHeight;
     private static TETile[][] tiles;
-    private Room[] rooms;
+    private ArrayList<Room> rooms;
     private Random random;
 
     /** Constructor */
@@ -28,6 +29,7 @@ public class Canvas {
         maxHeight = height;
         tiles = new TETile[maxWidth][maxHeight];
         this.random = random;
+        rooms = new ArrayList<>();
         drawBackground();
     }
 
@@ -45,11 +47,12 @@ public class Canvas {
     /** Add random number of random rooms on canvas. */
     private void addRandomRooms() {
         int count = nextRandomInt(MINROOMCOUNT, MAXROOMCOUNT);
-        rooms = new Room[count];
-        for (int i = 0; i < count; i += 1) {
-            Room randomRoom = randomRoom();
-            drawShapes(randomRoom);
-            rooms[i] = randomRoom;
+        for (int t = 0; t < count; t += 1) {
+            Room randomRoom = randomRoom(1);
+            if (randomRoom != null) {
+                drawShapes(randomRoom);
+                rooms.add(randomRoom);
+            }
         }
     }
 
@@ -58,11 +61,11 @@ public class Canvas {
      * For each room, add a hallway on the top wall if possible.
      */
     private void addHallways() {
-        for (int i = 0; i < rooms.length; i += 1) {
-            addHallwayR(rooms[i].walls[2]);
+        for (Room room : rooms) {
+            addHallwayR(room.walls[2]);
         }
-        for (int i = 0; i < rooms.length; i += 1) {
-            addHallwayT(rooms[i].walls[3]);
+        for (Room room : rooms) {
+            addHallwayT(room.walls[3]);
         }
     }
 
@@ -176,16 +179,20 @@ public class Canvas {
      * go beyond the canvas.
      * @return
      */
-    private Room randomRoom() {
-        int h = nextRandomInt(Room.MIN, Room.MAX + 1);
-        int w = nextRandomInt(Room.MIN, Room.MAX + 1);
-        int x = nextRandomInt(0, maxWidth - w);
-        int y = nextRandomInt(0, maxHeight - h);
-        Room randomRoom = new Room(w, h, new Position(x, y));
-        while (overlap(randomRoom)) {
-            return randomRoom();
+    private Room randomRoom(int tries) {
+        if (tries > MAXTRY) {
+            return null;
+        } else {
+            int h = nextRandomInt(Room.MIN, Room.MAX + 1);
+            int w = nextRandomInt(Room.MIN, Room.MAX + 1);
+            int x = nextRandomInt(0, maxWidth - w);
+            int y = nextRandomInt(0, maxHeight - h);
+            Room randomRoom = new Room(w, h, new Position(x, y));
+            while (overlap(randomRoom)) {
+                return randomRoom(tries + 1);
+            }
+            return randomRoom;
         }
-        return randomRoom;
     }
 
     /** Return true if the shape will be overlapped with
