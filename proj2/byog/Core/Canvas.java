@@ -3,7 +3,6 @@ package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-import java.io.PipedOutputStream;
 import java.util.Random;
 
 /** The Canvas object is used to represent the whole world.
@@ -110,7 +109,7 @@ public class Canvas {
 
     /** Change every tile on canvas to NOTHING. */
     private void drawBackground() {
-        drawRectangles(new Position(0,0), maxWidth, maxHeight, Tileset.NOTHING);
+        drawRectangles(new Position(0, 0), maxWidth, maxHeight, Tileset.NOTHING);
     }
 
     /** Draw a rectangle on canvas.
@@ -220,8 +219,8 @@ public class Canvas {
                 return null;
             }
             // Find the shortest close end hallway (wall followed by floor).
-            if (tiles[startP.x + 1][startP.y + i] == Tileset.WALL &&
-                    tiles[startP.x + 1][startP.y + i + 1] == Tileset.FLOOR) {
+            if (tiles[startP.x + 1][startP.y + i] == Tileset.WALL
+                    && tiles[startP.x + 1][startP.y + i + 1] == Tileset.FLOOR) {
                 VerticalHallway vhw = new VerticalHallway(i + 1, startP);
                 return vhw;
             }
@@ -238,9 +237,9 @@ public class Canvas {
         int maxLength = 1;
         // Find the maximum hallway length before reaching anything.
         while (startP.y + maxLength < maxHeight) {
-            if (tiles[startP.x][startP.y + maxLength] != Tileset.NOTHING ||
-                    tiles[startP.x + 1][startP.y + maxLength] != Tileset.NOTHING ||
-                    tiles[startP.x + 2][startP.y + maxLength] != Tileset.NOTHING) {
+            if (tiles[startP.x][startP.y + maxLength] != Tileset.NOTHING
+                    || tiles[startP.x + 1][startP.y + maxLength] != Tileset.NOTHING
+                    || tiles[startP.x + 2][startP.y + maxLength] != Tileset.NOTHING) {
                 break;
             }
             maxLength += 1;
@@ -268,8 +267,8 @@ public class Canvas {
                 return null;
             }
             // Find the shortest close end hallway (wall followed by floor).
-            if (tiles[startP.x + i][startP.y + 1] == Tileset.WALL &&
-                    tiles[startP.x + i + 1][startP.y + 1] == Tileset.FLOOR) {
+            if (tiles[startP.x + i][startP.y + 1] == Tileset.WALL
+                    && tiles[startP.x + i + 1][startP.y + 1] == Tileset.FLOOR) {
                 HorizontalHallway hhw = new HorizontalHallway(i + 1, startP);
                 return hhw;
             }
@@ -286,9 +285,9 @@ public class Canvas {
         int maxLength = 1;
         // Find the maximum hallway length before reaching anything.
         while (startP.x + maxLength < maxWidth) {
-            if (tiles[startP.x + maxLength][startP.y] != Tileset.NOTHING ||
-                    tiles[startP.x + maxLength][startP.y + 1] != Tileset.NOTHING ||
-                    tiles[startP.x + maxLength][startP.y + 2] != Tileset.NOTHING) {
+            if (tiles[startP.x + maxLength][startP.y] != Tileset.NOTHING
+                    || tiles[startP.x + maxLength][startP.y + 1] != Tileset.NOTHING
+                    || tiles[startP.x + maxLength][startP.y + 2] != Tileset.NOTHING) {
                 break;
             }
             maxLength += 1;

@@ -18,7 +18,7 @@ public class Room extends Shapes {
         walls[0] = new Wall(1, height, p);
         walls[1] = new Wall(width, 1, p);
         walls[2] = new Wall(1, height, p.shift(width - 1, 0));
-        walls[3] = new Wall(width, 1, p.shift(0,height - 1));
+        walls[3] = new Wall(width, 1, p.shift(0, height - 1));
     }
 
     public int numExit() {

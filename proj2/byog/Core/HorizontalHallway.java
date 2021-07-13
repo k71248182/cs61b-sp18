@@ -11,7 +11,7 @@ public class HorizontalHallway extends Shapes {
 
         walls = new Wall[2];
         walls[0] = new Wall(length, 1, p);
-        walls[1] = new Wall(length, 1, p.shift(0,2));
+        walls[1] = new Wall(length, 1, p.shift(0, 2));
 
     }
 }

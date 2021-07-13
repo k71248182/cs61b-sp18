@@ -23,6 +23,8 @@ public abstract class Shapes {
     }
 
     /** Return the position of the shape. */
-    public Position getPosition() { return position; }
+    public Position getPosition() {
+        return position;
+    }
 
 }
