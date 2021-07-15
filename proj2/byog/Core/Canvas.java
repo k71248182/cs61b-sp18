@@ -19,9 +19,10 @@ public class Canvas {
 
     private static int maxWidth;
     private static int maxHeight;
-    private static TETile[][] tiles;
+    private TETile[][] tiles;
     private ArrayList<Room> rooms;
     private Random random;
+    private Position Player;
 
     /** Constructor */
     public Canvas(int weight, int height, Random random) {
