@@ -39,10 +39,71 @@ public class Canvas {
         return tiles;
     }
 
+    /** Create a random world. */
     public void createWorld() {
         addRandomRooms();
         addHallways();
         closeOpenHallways();
+    }
+
+    /** Add a player to the world.
+     * The player should be added to a floor tile after
+     * the world has be created.
+     */
+    public void addPlayer() {
+        while (true) {
+            int x = nextRandomInt(0, maxWidth);
+            int y = nextRandomInt(0, maxHeight);
+            if (tiles[x][y] == Tileset.FLOOR) {
+                Player = new Position(x, y);
+                tiles[x][y] = Tileset.PLAYER;
+                return;
+            }
+        }
+
+
+    }
+
+    /** Move the player for one step depending on user input.
+     * This is doable only when the new position is floor tile.
+     */
+    public void moveOneStep(char key) {
+        Position newPlayerPosition = newPlayerPosition(key);
+        if (validPlayerPosition(newPlayerPosition)) {
+            tiles[Player.x][Player.y] = Tileset.FLOOR;
+            Player = newPlayerPosition;
+            tiles[Player.x][Player.y] = Tileset.PLAYER;
+        }
+    }
+
+    /** Return the new player position depending on user input.
+     * This method does not check the validity of the new position.
+     * @param key
+     * @return
+     */
+    private Position newPlayerPosition(char key) {
+        // Convert lower case char to upper case.
+        key = Character.toUpperCase(key);
+        switch (key) {
+            case 'A': return Player.shift(-1, 0);
+            case 'W': return Player.shift(0, 1);
+            case 'D': return Player.shift(1, 0);
+            case 'S': return Player.shift(0, -1);
+            default: return Player;
+        }
+    }
+
+    /** Return true if the position is reachable to the player. */
+    private boolean validPlayerPosition(Position p) {
+        if (p.x < 0 || p.y < 0 || p.x >= maxWidth || p.y >= maxHeight) {
+            return false;
+        } else if (tiles[p.x][p.y] == Tileset.FLOOR) {
+            return true;
+        } else if (tiles[p.x][p.y] == Tileset.PLAYER) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /** Add random number of random rooms on canvas. */
@@ -84,6 +145,7 @@ public class Canvas {
         }
     }
 
+    /** Return the positions of all surrounding tiles. */
     private Position[] surroundingPositions(Position p) {
         Position[] sp = new Position[8];
         sp[0] = p.shift(-1, 0);
@@ -368,4 +430,5 @@ public class Canvas {
             }
         }
     }
+
 }
