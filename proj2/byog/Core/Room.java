@@ -1,8 +1,10 @@
 package byog.Core;
 
+import java.io.Serializable;
+
 /** Room class represented by rectangles.
  * A room has four walls. */
-public class Room extends Shapes {
+public class Room extends Shapes implements Serializable {
 
     protected static final int MAX = 8;
     protected static final int MIN = 4;

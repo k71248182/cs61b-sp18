@@ -1,7 +1,9 @@
 package byog.Core;
 
+import java.io.Serializable;
 
-public class VerticalHallway extends Shapes {
+
+public class VerticalHallway extends Shapes implements Serializable {
 
     /** Constructor */
     public VerticalHallway(int length, Position p) {

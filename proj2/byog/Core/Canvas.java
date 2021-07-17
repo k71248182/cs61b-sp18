@@ -3,6 +3,7 @@ package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
+import java.io.Serializable;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -10,15 +11,15 @@ import java.util.ArrayList;
  * Everything in the world will be drawn on the same canvas.
  * A 2D array of tiles make up the canvas.
  */
-public class Canvas {
+public class Canvas implements Serializable {
 
     private static final int MINROOMCOUNT = 25;
     private static final int MAXROOMCOUNT = 50;
     private static final int MAXTRY = 20;
     private static final int MAXHALLWAY = 8;
 
-    private static int maxWidth;
-    private static int maxHeight;
+    private int maxWidth;
+    private int maxHeight;
     private TETile[][] tiles;
     private ArrayList<Room> rooms;
     private Random random;
@@ -95,15 +96,16 @@ public class Canvas {
 
     /** Return true if the position is reachable to the player. */
     private boolean validPlayerPosition(Position p) {
+        // Return false if the new position will go out of canvas.
         if (p.x < 0 || p.y < 0 || p.x >= maxWidth || p.y >= maxHeight) {
             return false;
-        } else if (tiles[p.x][p.y] == Tileset.FLOOR) {
-            return true;
-        } else if (tiles[p.x][p.y] == Tileset.PLAYER) {
-            return true;
-        } else {
-            return false;
         }
+        // Return true if the tile in the new position is floor or player.
+        TETile tileP = tiles[p.x][p.y];
+        String tileDescription = tileP.description();
+        boolean isFloor = tileDescription.equals("floor");
+        boolean isPlayer = tileDescription.equals("player");
+        return isFloor || isPlayer;
     }
 
     /** Add random number of random rooms on canvas. */

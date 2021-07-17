@@ -6,6 +6,7 @@ import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Font;
 import java.awt.Color;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,10 +15,11 @@ public class Game {
     TERenderer ter = new TERenderer();
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+    private static final String SAVEFILE = "save.ser";
     private Random random;
     private String validMainMenuInputs = "NLQnlq";
     private String validSeedInputs = "0123456789Ss";
-    private String validMoveInputs = "ASDWasdw";
+    private String validMoveInputs = "ASDWasdwQq";
 
     /** A class for main menu display */
     private static class MainMenu {
@@ -152,9 +154,15 @@ public class Game {
             case 'N': {
                 long seed = receiveInputSeed();
                 random = new Random(seed);
-                displayWorld();
+                Canvas canvas = newRandomWorld();
+                displayWorld(canvas);
             }
-            case 'L':
+            case 'L': {
+                Canvas canvas = loadGame();
+                if (canvas != null) {
+                    displayWorld(canvas);
+                }
+            }
             case 'Q': System.exit(0);
             default: return;
         }
@@ -188,14 +196,10 @@ public class Game {
         }
     }
 
-    /** Display a new world that the player can move around in it.*/
-    private void displayWorld() {
+    /** Display the world and allow the player to move around in it.*/
+    private void displayWorld(Canvas canvas) {
+        // Display the world
         ter.initialize(WIDTH, HEIGHT + 2, 0, 1);
-
-        // Create a new random world and add a player to it.
-        Canvas canvas = new Canvas(WIDTH, HEIGHT, random);
-        canvas.createWorld();
-        canvas.addPlayer();
         TETile[][] world = canvas.getTiles();
         ter.renderFrame(world);
 
@@ -203,8 +207,61 @@ public class Game {
         while (true) {
             char key = receiveInputKey(validMoveInputs);
             key = Character.toUpperCase(key);
+            if (key == 'Q') {
+                saveGame(canvas);
+                System.exit(0);
+            }
             canvas.moveOneStep(key);
             ter.renderFrame(canvas.getTiles());
         }
+    }
+
+    /** Save the game(canvas). */
+    private void saveGame(Canvas canvas) {
+        try {
+            FileOutputStream file = new FileOutputStream(SAVEFILE);
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(canvas);
+            out.close();
+            file.close();
+            System.out.println("Game has been saved.");
+        }
+        catch (IOException ex) {
+            System.out.println("IOException is caught.");
+        }
+    }
+
+    /** Load a previous saved world. */
+    private Canvas loadGame() {
+        try {
+            FileInputStream file = new FileInputStream(SAVEFILE);
+            ObjectInputStream in = new ObjectInputStream(file);
+            Canvas canvas = (Canvas) in.readObject();
+            in.close();
+            file.close();
+            System.out.println("Saved game is loaded.");
+            return canvas;
+        }
+        catch (FileNotFoundException ex) {
+            System.out.println("File not found.");
+            return null;
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("IOException is caught.");
+            return null;
+        }
+        catch (ClassNotFoundException ex) {
+            System.out.println("ClassNotFoundException is caught.");
+            return null;
+        }
+    }
+
+    /** Create a new random world and add a player to it. */
+    private Canvas newRandomWorld() {
+        Canvas canvas = new Canvas(WIDTH, HEIGHT, random);
+        canvas.createWorld();
+        canvas.addPlayer();
+        return canvas;
     }
 }
