@@ -138,6 +138,9 @@ public class Game {
             StdDraw.setFont(tileFont);
         }
 
+        /** Display the description of the tile under the
+         * mouse pointer.
+         */
         private void showCursorInfo() {
             Font tileFont = StdDraw.getFont();
 
@@ -149,32 +152,18 @@ public class Game {
             StdDraw.setFont(tileFont);
         }
 
-        private String cursorInfo() {
+        /** Return the description of the tile under the
+         * mouse pointer.
+         */
+        private void updateCursorInfo() {
             double xDouble = StdDraw.mouseX();
-            double yDouble = StdDraw.mouseY();
-            int x = (int) Math.round(xDouble);
-            int y = (int) Math.round(yDouble);
+            double yDouble = StdDraw.mouseY() - BOTTOMMARGIN;
+            int x = (int) Math.floor(xDouble);
+            int y = (int) Math.floor(yDouble);
             Position p = new Position(Math.round(x), Math.round(y));
-            String tileDesc = canvas.getTileDesc(p);
-            return tileDesc;
+            currentCursorInfo = canvas.getTileDesc(p);
         }
 
-    }
-
-    private class MouseTrack implements Runnable {
-        public void run() {
-            while (true) {
-                try {
-                    String newCursorInfo = gameScreen.cursorInfo();
-                    if (!newCursorInfo.equals(currentCursorInfo)) {
-                        gameScreen.showCanvas(ter);
-                    }
-                    Thread.sleep(10);
-                } catch (Exception e) {
-                    System.out.println("Exception is caught.");
-                }
-            }
-        }
     }
 
     /**
@@ -326,14 +315,28 @@ public class Game {
     /** Display the world and allow the player to move around in it.*/
     private void playingGame() {
         gameScreen.setup(ter);
-
-        //Thread mouseTrack = new Thread(new MouseTrack());
-        //mouseTrack.start();
         boolean endSignal = false;
 
         while (true) {
+            // cursor information
             gameScreen.showCanvas(ter);
-            char key = receiveInputKey(validMoveInputs);
+            try {
+                Thread.sleep(10);
+                gameScreen.updateCursorInfo();
+                gameScreen.showCanvas(ter);
+            } catch (Exception e) {
+                System.out.println("Exception is caught.");
+            }
+
+            // handle user input keys
+            if (!StdDraw.hasNextKeyTyped()) {
+                continue;
+            }
+            char key = StdDraw.nextKeyTyped();
+            String keyString = String.valueOf(key);
+            if (!validMoveInputs.contains(keyString)) {
+                continue;
+            }
             key = Character.toUpperCase(key);
             if (key == 'Q') {
                 if (endSignal) {
