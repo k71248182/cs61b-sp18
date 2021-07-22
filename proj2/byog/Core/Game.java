@@ -12,7 +12,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.util.Random;
 
 public class Game {
@@ -417,7 +416,7 @@ public class Game {
 
     /** Create a new random world and add a player to it. */
     private Canvas newRandomWorld() {
-        Canvas canvas = new Canvas(WIDTH, HEIGHT, random);
+        canvas = new Canvas(WIDTH, HEIGHT, random);
         canvas.createWorld();
         canvas.addPlayer();
         return canvas;
