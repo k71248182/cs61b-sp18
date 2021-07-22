@@ -7,19 +7,30 @@ import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Font;
 import java.awt.Color;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Game {
     TERenderer ter = new TERenderer();
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+    public static final int TOPMARGIN = 1;
+    public static final int BOTTOMMARGIN = 2;
     private static final String SAVEFILE = "save.ser";
+    protected Canvas canvas;
+    protected String currentCursorInfo;
+    protected boolean playWithInputString;
     private Random random;
+    private String inputString;
+    private GameScreen gameScreen;
     private String validMainMenuInputs = "NLQnlq";
     private String validSeedInputs = "0123456789Ss";
-    private String validMoveInputs = "ASDWasdwQq";
+    private String validMoveInputs = "ASDWasdwQq:";
+
+    /** Constructor of the Game class. */
+    public Game() {
+        gameScreen = new GameScreen();
+        currentCursorInfo = "";
+    }
 
     /** A class for main menu display */
     private static class MainMenu {
@@ -92,6 +103,80 @@ public class Game {
 
     }
 
+    /** A class for gaming playing display */
+    private class GameScreen {
+
+        /** Set up the canvas size.
+         * Add top and bottom margin to provide useful information.
+         * @param ter
+         */
+        public static void setup(TERenderer ter) {
+            int totalHeight = HEIGHT + TOPMARGIN + BOTTOMMARGIN;
+            ter.initialize(WIDTH, totalHeight, 0, BOTTOMMARGIN);
+        }
+
+        /** Show canvas */
+        public void showCanvas(TERenderer ter) {
+            TETile[][] world = canvas.getTiles();
+            StdDraw.clear(new Color(0, 0, 0));
+            ter.renderFrame(world);
+            showStandardInfo();
+            showCursorInfo();
+            StdDraw.show();
+        }
+
+        /** Additional information for the game player */
+        private static void showStandardInfo() {
+            Font tileFont = StdDraw.getFont();
+
+            StdDraw.setPenColor(StdDraw.PINK);
+            Font bottomFont = new Font("Monaco", Font.BOLD, 15);
+            StdDraw.setFont(bottomFont);
+            StdDraw.textLeft(0, 1, "save and quit (:q)");
+            StdDraw.text(0.5 * WIDTH, 1, "← a  ↑ w  → d  ↓ s");
+
+            StdDraw.setFont(tileFont);
+        }
+
+        private void showCursorInfo() {
+            Font tileFont = StdDraw.getFont();
+
+            StdDraw.setPenColor(StdDraw.PINK);
+            Font cursorInfoFond = new Font("Monaco", Font.BOLD, 15);
+            StdDraw.setFont(cursorInfoFond);
+            StdDraw.textRight(WIDTH, 1, currentCursorInfo);
+
+            StdDraw.setFont(tileFont);
+        }
+
+        private String cursorInfo() {
+            double xDouble = StdDraw.mouseX();
+            double yDouble = StdDraw.mouseY();
+            int x = (int) Math.round(xDouble);
+            int y = (int) Math.round(yDouble);
+            Position p = new Position(Math.round(x), Math.round(y));
+            String tileDesc = canvas.getTileDesc(p);
+            return tileDesc;
+        }
+
+    }
+
+    private class MouseTrack implements Runnable {
+        public void run() {
+            while (true) {
+                try {
+                    String newCursorInfo = gameScreen.cursorInfo();
+                    if (!newCursorInfo.equals(currentCursorInfo)) {
+                        gameScreen.showCanvas(ter);
+                    }
+                    Thread.sleep(10);
+                } catch (Exception e) {
+                    System.out.println("Exception is caught.");
+                }
+            }
+        }
+    }
+
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
@@ -114,17 +199,15 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] playWithInputString(String input) {
+        playWithInputString = true;
+        inputString = input;
+        processMainMenuInput();
 
-        String seedString = input.substring(1, input.length() - 1);
-        long seed = Long.parseLong(seedString);
-        random = new Random(seed);
-        //TETile[][] finalWorldFrame = newWorld();
-
-        //return finalWorldFrame;
-        return null;
+        return canvas.getTiles();
     }
 
     /** Return one valid input key from the user.
+     * This method will be waiting until a valid key is returned.
      * Only characters in the provided list will be recognized. */
     private char receiveInputKey(String validInputs) {
         while (true) {
@@ -141,31 +224,36 @@ public class Game {
         }
     }
 
-    /** Process one input key for the main menu.
-     * N to start a new game.
-     * L to load existing game.
-     * Q to quit. */
-    private void processMainMenuInput() {
-        //ArrayList<Character> validMainMenuInputs = validMainMenuInputs();
-        char key = receiveInputKey(validMainMenuInputs);
-        // Convert lower case char to upper case.
-        key = Character.toUpperCase(key);
-        switch (key) {
-            case 'N': {
-                long seed = receiveInputSeed();
-                random = new Random(seed);
-                Canvas canvas = newRandomWorld();
-                displayWorld(canvas);
-            }
-            case 'L': {
-                Canvas canvas = loadGame();
-                if (canvas != null) {
-                    displayWorld(canvas);
-                }
-            }
-            case 'Q': System.exit(0);
-            default: return;
+    /** Process the next char in the input string.
+     * Equivalent to receiveInputKey method, but used
+     * for playWithInputString method.
+     * @param validInputs
+     * @return
+     */
+    private char nextCharInString(String validInputs) {
+        char key = inputString.charAt(0);
+        String keyString = String.valueOf(key);
+        if (validInputs.contains(keyString)) {
+            inputString = inputString.substring(1);
+            return key;
+        } else {
+            return nextCharInString(validInputs);
         }
+    }
+
+    /** Receive user input for main menu options and convert
+     * it to upper case.
+     * @return
+     */
+    private char receiveMainMenuInput() {
+        char key;
+        if (playWithInputString) {
+            key = nextCharInString(validMainMenuInputs);
+        } else {
+            key = receiveInputKey(validMainMenuInputs);
+        }
+        key = Character.toUpperCase(key);
+        return key;
     }
 
     /** Read the seed from user inputs. */
@@ -178,7 +266,12 @@ public class Game {
 
         // Read all integer inputs before the user press "S".
         while (!startGameButton) {
-            char userInput = receiveInputKey(validSeedInputs);
+            char userInput;
+            if (playWithInputString) {
+                userInput = nextCharInString(validSeedInputs);
+            } else {
+                userInput = receiveInputKey(validSeedInputs);
+            }
             if (userInput == 's' || userInput == 'S') {
                 startGameButton = true;
             } else {
@@ -196,23 +289,81 @@ public class Game {
         }
     }
 
-    /** Display the world and allow the player to move around in it.*/
-    private void displayWorld(Canvas canvas) {
-        // Display the world
-        ter.initialize(WIDTH, HEIGHT + 2, 0, 1);
-        TETile[][] world = canvas.getTiles();
-        ter.renderFrame(world);
+    /** Process one input key for the main menu.
+     * N to start a new game. The user must provide a seed.
+     * L to load existing game.
+     * Q to quit. */
+    private void processMainMenuInput() {
+        char key = receiveMainMenuInput();
+        switch (key) {
+            case 'N': {
+                long seed = receiveInputSeed();
+                random = new Random(seed);
+                canvas = newRandomWorld();
+                if (!playWithInputString) {
+                    playingGame();
+                } else {
+                    playingGameWithInputString();
+                }
+                break;
+            }
+            case 'L': {
+                canvas = loadGame();
+                if (canvas != null) {
+                    if (!playWithInputString) {
+                        playingGame();
+                    } else {
+                        playingGameWithInputString();
+                    }
+                }
+                break;
+            }
+            case 'Q': System.exit(0);
+            default: return;
+        }
+    }
 
-        // Allow player movements.
+    /** Display the world and allow the player to move around in it.*/
+    private void playingGame() {
+        gameScreen.setup(ter);
+
+        //Thread mouseTrack = new Thread(new MouseTrack());
+        //mouseTrack.start();
+        boolean endSignal = false;
+
         while (true) {
+            gameScreen.showCanvas(ter);
             char key = receiveInputKey(validMoveInputs);
             key = Character.toUpperCase(key);
             if (key == 'Q') {
-                saveGame(canvas);
-                System.exit(0);
+                if (endSignal) {
+                    saveGame(canvas);
+                    System.exit(0);
+                }
+            } else {
+                canvas.moveOneStep(key);
             }
-            canvas.moveOneStep(key);
-            ter.renderFrame(canvas.getTiles());
+            endSignal = (key == ':');
+        }
+    }
+
+    /** Return the world exactly as it would be if
+     * the user has typed the input keys manually.
+     */
+    private void playingGameWithInputString() {
+        boolean endSignal = false;
+        while (inputString.length() > 0) {
+            char key = nextCharInString(validMoveInputs);
+            key = Character.toUpperCase(key);
+            if (key == 'Q') {
+                if (endSignal) {
+                    saveGame(canvas);
+                    return;
+                }
+            } else {
+                canvas.moveOneStep(key);
+            }
+            endSignal = (key == ':');
         }
     }
 
@@ -227,7 +378,7 @@ public class Game {
             System.out.println("Game has been saved.");
         }
         catch (IOException ex) {
-            System.out.println("IOException is caught.");
+            System.out.println("IOException is caught. Game is not saved.");
         }
     }
 
@@ -264,4 +415,5 @@ public class Game {
         canvas.addPlayer();
         return canvas;
     }
+
 }

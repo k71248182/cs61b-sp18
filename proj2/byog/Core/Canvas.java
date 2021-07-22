@@ -77,6 +77,20 @@ public class Canvas implements Serializable {
         }
     }
 
+    /** Return the description of the tile in the given position.
+     * Return null if the position is out of scope.
+     * @param p
+     * @return
+     */
+    public String getTileDesc(Position p) {
+        if (p.x < 0 || p.y < 0 || p.x >= maxWidth || p.y >= maxHeight) {
+            return "";
+        }
+        TETile tileP = tiles[p.x][p.y];
+        String tileDescription = tileP.description();
+        return tileDescription;
+    }
+
     /** Return the new player position depending on user input.
      * This method does not check the validity of the new position.
      * @param key
@@ -96,15 +110,9 @@ public class Canvas implements Serializable {
 
     /** Return true if the position is reachable to the player. */
     private boolean validPlayerPosition(Position p) {
-        // Return false if the new position will go out of canvas.
-        if (p.x < 0 || p.y < 0 || p.x >= maxWidth || p.y >= maxHeight) {
-            return false;
-        }
-        // Return true if the tile in the new position is floor or player.
-        TETile tileP = tiles[p.x][p.y];
-        String tileDescription = tileP.description();
-        boolean isFloor = tileDescription.equals("floor");
-        boolean isPlayer = tileDescription.equals("player");
+        String tileDesc = getTileDesc(p);
+        boolean isFloor = tileDesc.equals("floor");
+        boolean isPlayer = tileDesc.equals("player");
         return isFloor || isPlayer;
     }
 
