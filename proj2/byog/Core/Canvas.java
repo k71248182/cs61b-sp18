@@ -23,7 +23,7 @@ public class Canvas implements Serializable {
     private TETile[][] tiles;
     private ArrayList<Room> rooms;
     private Random random;
-    private Position Player;
+    private Position player;
 
     /** Constructor */
     public Canvas(int weight, int height, Random random) {
@@ -56,13 +56,11 @@ public class Canvas implements Serializable {
             int x = nextRandomInt(0, maxWidth);
             int y = nextRandomInt(0, maxHeight);
             if (tiles[x][y] == Tileset.FLOOR) {
-                Player = new Position(x, y);
+                player = new Position(x, y);
                 tiles[x][y] = Tileset.PLAYER;
                 return;
             }
         }
-
-
     }
 
     /** Move the player for one step depending on user input.
@@ -71,9 +69,9 @@ public class Canvas implements Serializable {
     public void moveOneStep(char key) {
         Position newPlayerPosition = newPlayerPosition(key);
         if (validPlayerPosition(newPlayerPosition)) {
-            tiles[Player.x][Player.y] = Tileset.FLOOR;
-            Player = newPlayerPosition;
-            tiles[Player.x][Player.y] = Tileset.PLAYER;
+            tiles[player.x][player.y] = Tileset.FLOOR;
+            player = newPlayerPosition;
+            tiles[player.x][player.y] = Tileset.PLAYER;
         }
     }
 
@@ -100,11 +98,11 @@ public class Canvas implements Serializable {
         // Convert lower case char to upper case.
         key = Character.toUpperCase(key);
         switch (key) {
-            case 'A': return Player.shift(-1, 0);
-            case 'W': return Player.shift(0, 1);
-            case 'D': return Player.shift(1, 0);
-            case 'S': return Player.shift(0, -1);
-            default: return Player;
+            case 'A': return player.shift(-1, 0);
+            case 'W': return player.shift(0, 1);
+            case 'D': return player.shift(1, 0);
+            case 'S': return player.shift(0, -1);
+            default: return player;
         }
     }
 

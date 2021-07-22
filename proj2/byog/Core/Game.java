@@ -6,7 +6,13 @@ import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Font;
 import java.awt.Color;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.Random;
 
 public class Game {
@@ -108,15 +114,14 @@ public class Game {
 
         /** Set up the canvas size.
          * Add top and bottom margin to provide useful information.
-         * @param ter
          */
-        public static void setup(TERenderer ter) {
+        public void setup() {
             int totalHeight = HEIGHT + TOPMARGIN + BOTTOMMARGIN;
             ter.initialize(WIDTH, totalHeight, 0, BOTTOMMARGIN);
         }
 
         /** Show canvas */
-        public void showCanvas(TERenderer ter) {
+        public void showCanvas() {
             TETile[][] world = canvas.getTiles();
             StdDraw.clear(new Color(0, 0, 0));
             ter.renderFrame(world);
@@ -126,7 +131,7 @@ public class Game {
         }
 
         /** Additional information for the game player */
-        private static void showStandardInfo() {
+        private void showStandardInfo() {
             Font tileFont = StdDraw.getFont();
 
             StdDraw.setPenColor(StdDraw.PINK);
@@ -307,25 +312,28 @@ public class Game {
                 }
                 break;
             }
-            case 'Q': System.exit(0);
+            case 'Q': {
+                System.exit(0);
+                break;
+            }
             default: return;
         }
     }
 
     /** Display the world and allow the player to move around in it.*/
     private void playingGame() {
-        gameScreen.setup(ter);
+        gameScreen.setup();
         boolean endSignal = false;
 
         while (true) {
             // cursor information
-            gameScreen.showCanvas(ter);
+            gameScreen.showCanvas();
             try {
                 Thread.sleep(10);
                 gameScreen.updateCursorInfo();
-                gameScreen.showCanvas(ter);
-            } catch (Exception e) {
-                System.out.println("Exception is caught.");
+                gameScreen.showCanvas();
+            } catch (InterruptedException e) {
+                System.out.println("InterruptedException is caught.");
             }
 
             // handle user input keys
@@ -340,7 +348,7 @@ public class Game {
             key = Character.toUpperCase(key);
             if (key == 'Q') {
                 if (endSignal) {
-                    saveGame(canvas);
+                    saveGame();
                     System.exit(0);
                 }
             } else {
@@ -360,7 +368,7 @@ public class Game {
             key = Character.toUpperCase(key);
             if (key == 'Q') {
                 if (endSignal) {
-                    saveGame(canvas);
+                    saveGame();
                     return;
                 }
             } else {
@@ -371,7 +379,7 @@ public class Game {
     }
 
     /** Save the game(canvas). */
-    private void saveGame(Canvas canvas) {
+    private void saveGame() {
         try {
             FileOutputStream file = new FileOutputStream(SAVEFILE);
             ObjectOutputStream out = new ObjectOutputStream(file);
@@ -379,8 +387,7 @@ public class Game {
             out.close();
             file.close();
             System.out.println("Game has been saved.");
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.out.println("IOException is caught. Game is not saved.");
         }
     }
@@ -390,22 +397,19 @@ public class Game {
         try {
             FileInputStream file = new FileInputStream(SAVEFILE);
             ObjectInputStream in = new ObjectInputStream(file);
-            Canvas canvas = (Canvas) in.readObject();
+            canvas = (Canvas) in.readObject();
             in.close();
             file.close();
             System.out.println("Saved game is loaded.");
             return canvas;
-        }
-        catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
             System.out.println("File not found.");
             return null;
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
             System.out.println("IOException is caught.");
             return null;
-        }
-        catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             System.out.println("ClassNotFoundException is caught.");
             return null;
         }
