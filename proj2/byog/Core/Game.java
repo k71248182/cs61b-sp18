@@ -6,12 +6,14 @@ import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Font;
 import java.awt.Color;
+import java.io.FilePermission;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.Permission;
 import java.util.Random;
 
 public class Game {
@@ -384,6 +386,7 @@ public class Game {
     /** Save the game(canvas). */
     private void saveGame() {
         try {
+            Permission perm = new FilePermission(SAVEFILE, "write");
             FileOutputStream file = new FileOutputStream(SAVEFILE);
             ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(canvas);
@@ -398,6 +401,7 @@ public class Game {
     /** Load a previous saved world. */
     private Canvas loadGame() {
         try {
+            Permission perm = new FilePermission(SAVEFILE, "read");
             FileInputStream file = new FileInputStream(SAVEFILE);
             ObjectInputStream in = new ObjectInputStream(file);
             canvas = (Canvas) in.readObject();
