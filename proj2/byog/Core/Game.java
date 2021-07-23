@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Game {
-    TERenderer ter = new TERenderer();
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
     public static final int TOPMARGIN = 1;
     public static final int BOTTOMMARGIN = 2;
     private static final String SAVEFILE = "save.ser";
+    protected TERenderer ter;
     protected Canvas canvas;
     protected String currentCursorInfo;
     protected boolean playWithInputString;
@@ -33,6 +33,7 @@ public class Game {
 
     /** Constructor of the Game class. */
     public Game() {
+        ter = new TERenderer();
         gameScreen = new GameScreen();
         currentCursorInfo = "";
     }
