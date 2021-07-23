@@ -2,8 +2,8 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
-import edu.princeton.cs.introcs.StdDraw;
 
+import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Font;
 import java.awt.Color;
 import java.io.FileInputStream;
@@ -196,7 +196,6 @@ public class Game {
         playWithInputString = true;
         inputString = input;
         processMainMenuInput();
-
         return canvas.getTiles();
     }
 
@@ -256,7 +255,9 @@ public class Game {
         boolean startGameButton = false;
 
         // Display a message to user, asking for the seed.
-        MainMenu.displaySeedInfo(seedString);
+        if (!playWithInputString) {
+            MainMenu.displaySeedInfo(seedString);
+        }
 
         // Read all integer inputs before the user press "S".
         while (!startGameButton) {
@@ -270,7 +271,9 @@ public class Game {
                 startGameButton = true;
             } else {
                 seedString += userInput;
-                MainMenu.displaySeedInfo(seedString);
+                if (!playWithInputString) {
+                    MainMenu.displaySeedInfo(seedString);
+                }
             }
         }
 
