@@ -2,9 +2,6 @@ package hw2;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-import java.lang.IllegalArgumentException;
-import java.lang.IndexOutOfBoundsException;
-
 public class Percolation {
 
     private int maxGrid;
@@ -114,7 +111,7 @@ public class Percolation {
      * @param col
      * @return
      */
-    private int xyTo1D (int row, int col) {
+    private int xyTo1D(int row, int col) {
         int p = row * maxGrid + col;
         return p;
     }

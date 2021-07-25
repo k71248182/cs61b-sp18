@@ -2,14 +2,13 @@ package hw2;
 
 import edu.princeton.cs.introcs.StdRandom;
 import edu.princeton.cs.introcs.StdStats;
-import java.lang.IllegalArgumentException;
 
 public class PercolationStats {
 
     private int grid;
     private int times;
-    int[] openSites;
-    double[] fractions;
+    private int[] openSites;
+    private double[] fractions;
     private PercolationFactory pf;
 
     /** Perform T independent experiments ona N-by-N grid.
