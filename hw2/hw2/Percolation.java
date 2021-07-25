@@ -105,10 +105,10 @@ public class Percolation {
      */
     private void checkRange(int row, int col) {
         if (row < 0) {
-            throw new IllegalArgumentException("negative row number.");
+            throw new IndexOutOfBoundsException("negative row number.");
         }
         if (col < 0) {
-            throw new IllegalArgumentException("negative column number.");
+            throw new IndexOutOfBoundsException("negative column number.");
         }
         if (row >= maxGrid) {
             throw new IndexOutOfBoundsException("row number out of boundary.");
