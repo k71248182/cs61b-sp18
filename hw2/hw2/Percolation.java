@@ -1,5 +1,6 @@
 package hw2;
 
+import edu.princeton.cs.algs4.Stopwatch;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -87,7 +88,14 @@ public class Percolation {
 
     /** Used for testing */
     public static void main(String[] args) {
-
+        int n = 50;
+        for (int t = 1000; t <= 10000; t *= 2) {
+            Stopwatch timer1 = new Stopwatch();
+            PercolationFactory pf = new PercolationFactory();
+            PercolationStats ps = new PercolationStats(n, t, pf);
+            double time1 = timer1.elapsedTime();
+            System.out.println(n + " " + t + " " + ps.mean() + " " + time1);
+        }
     }
 
     /** Check corner cases. Throw a exception if the row

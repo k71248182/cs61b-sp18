@@ -89,6 +89,8 @@ public class PercolationStats {
         int col = StdRandom.uniform(grid);
         if (percolation.isOpen(row, col)) {
             openRandomSite(percolation);
+        } else {
+            percolation.open(row, col);
         }
     }
 
