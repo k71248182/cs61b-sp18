@@ -18,6 +18,9 @@ public class Percolation {
      * @param N
      */
     public Percolation(int N) {
+        if (N < 0) {
+            throw new IllegalArgumentException("N must be greater than zero.");
+        }
         maxGrid = N;
         openSites = new boolean[N][N];
         for (int i = 0; i < N; i += 1) {
@@ -39,6 +42,7 @@ public class Percolation {
      * @param col
      */
     public void open(int row, int col) {
+        checkRange(row, col);
         if (!isOpen(row, col)) {
             openSites[row][col] = true;
             numberOfOpenSites += 1;

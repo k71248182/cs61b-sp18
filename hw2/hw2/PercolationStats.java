@@ -18,10 +18,10 @@ public class PercolationStats {
      */
     public PercolationStats(int N, int T, PercolationFactory pf) {
         if (N <= 0) {
-            throw new IllegalArgumentException("N must be greater or equal to zero.");
+            throw new IllegalArgumentException("N must be greater than zero.");
         }
         if (T <= 0) {
-            throw new IllegalArgumentException("T must be greater or equal to zero.");
+            throw new IllegalArgumentException("T must be greater than zero.");
         }
         grid = N;
         times = T;
