@@ -1,5 +1,6 @@
 package lab9;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -98,7 +99,24 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> keys = new HashSet<>();
+        keySetHelper(keys, root);
+        return keys;
+    }
+
+    /** Returns a set of keys in the subtree rooted in p. */
+    private void keySetHelper(Set<K> keys, Node p) {
+        if (p == null) {
+            return;
+        }
+        if (p.left != null) {
+            keys.add(p.left.key);
+            keySetHelper(keys, p.left);
+        }
+        if (p.right != null) {
+            keys.add(p.right.key);
+            keySetHelper(keys, p.right);
+        }
     }
 
     /** Removes KEY from the tree if present
@@ -107,7 +125,66 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        V value = get(key);
+        if (value != null) {
+            root = removeHelper(key, root);
+            size -= 1;
+        }
+        return value;
+    }
+
+    /** Delete the node of KEY in the subtree rooted in P.
+     * Return the root.
+     */
+    private Node removeHelper(K key, Node p) {
+        if (p == null) {
+            return null;
+        }
+        int compare = key.compareTo(p.key);
+        if (compare == 0) {
+            if (p.left == null && p.right == null) {
+                // If the key is in a leaf, simply delete it.
+                return null;
+            } else if (p.left == null) {
+                // If the key has no left branch, return the right branch.
+                return p.right;
+            } else if (p.right == null) {
+                // If the key has no right branch, return the left branch.
+                return p.left;
+            } else {
+                Node minRightP = min(p.right);
+                p.key = minRightP.key;
+                p.value = minRightP.value;
+                removeMin(minRightP);
+                return p;
+            }
+        } else if (compare > 0) {
+            return p.right = removeHelper(key, p.right);
+        } else {
+            return p.left = removeHelper(key, p.left);
+        }
+    }
+
+    /** Return the minimum node of the subtree. */
+    private Node min(Node p) {
+        if (p == null) {
+            return null;
+        } else if (p.right == null) {
+            return p;
+        } else {
+            return min(p.right);
+        }
+    }
+
+    /** Remove the minimum node.
+     * This is used as a helper method for the remove
+     * method, therefore no size change happens here. */
+    private void removeMin(Node minNode) {
+        if (minNode.right == null) {
+            minNode = null;
+        } else {
+            minNode = minNode.right;
+        }
     }
 
     /** Removes the key-value entry for the specified key only if it is
@@ -116,11 +193,17 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      **/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        V currentValue = get(key);
+        if (currentValue.equals(value)) {
+            root = removeHelper(key, root);
+            size -= 1;
+            return value;
+        }
+        return null;
     }
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
+        return keySet().iterator();
     }
 }
