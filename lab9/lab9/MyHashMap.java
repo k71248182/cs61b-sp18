@@ -27,6 +27,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         this.clear();
     }
 
+    public MyHashMap(int initialSize) {
+        buckets = new ArrayMap[initialSize];
+        this.clear();
+    }
+
     /* Removes all of the mappings from this map. */
     @Override
     public void clear() {
@@ -70,6 +75,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         ArrayMap<K, V> bucket = buckets[hash(key)];
         if (!bucket.containsKey(key)) {
             size += 1;
+            if (loadFactor() > MAX_LF) {
+
+            }
         }
         bucket.put(key, value);
     }
@@ -78,6 +86,19 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public int size() {
         return size;
+    }
+
+    /** Resize by doubling the number of buckets. */
+    private void grow() {
+        MyHashMap<K, V> newHashMap = new MyHashMap<>(size * 2);
+        for (ArrayMap<K, V> arrayMap : buckets) {
+            for (K key : arrayMap) {
+                V value = arrayMap.get(key);
+                newHashMap.put(key, value);
+            }
+        }
+        this.buckets = newHashMap.buckets;
+        this.size = newHashMap.size();
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
