@@ -108,13 +108,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private void keySetHelper(Set<K> keys, Node p) {
         if (p == null) {
             return;
-        }
-        if (p.left != null) {
-            keys.add(p.left.key);
+        } else {
+            keys.add(p.key);
             keySetHelper(keys, p.left);
-        }
-        if (p.right != null) {
-            keys.add(p.right.key);
             keySetHelper(keys, p.right);
         }
     }
@@ -127,8 +123,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     public V remove(K key) {
         V value = get(key);
         if (value != null) {
-            root = removeHelper(key, root);
-            size -= 1;
+            removeHelper(key, root);
         }
         return value;
     }
@@ -136,54 +131,49 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /** Delete the node of KEY in the subtree rooted in P.
      * Return the root.
      */
-    private Node removeHelper(K key, Node p) {
+    private void removeHelper(K key, Node p) {
         if (p == null) {
-            return null;
+            return;
         }
         int compare = key.compareTo(p.key);
         if (compare == 0) {
-            if (p.left == null && p.right == null) {
-                // If the key is in a leaf, simply delete it.
-                return null;
-            } else if (p.left == null) {
-                // If the key has no left branch, return the right branch.
-                return p.right;
-            } else if (p.right == null) {
-                // If the key has no right branch, return the left branch.
-                return p.left;
-            } else {
-                Node minRightP = min(p.right);
-                p.key = minRightP.key;
-                p.value = minRightP.value;
-                removeMin(minRightP);
-                return p;
-            }
+            removeNode(p);
         } else if (compare > 0) {
-            return p.right = removeHelper(key, p.right);
+            removeHelper(key, p.right);
         } else {
-            return p.left = removeHelper(key, p.left);
+            removeHelper(key, p.left);
         }
     }
 
-    /** Return the minimum node of the subtree. */
+    /** Remove the given node and keep the remaining tree structure. */
+    private void removeNode(Node p) {
+        if (p == null) {
+            return;
+        }
+        if (p.left == null && p.right == null) {
+            p = null;     // This is a leaf node
+        } else if (p.left == null) {
+            p = p.right;  // Has one branch on the right only
+        } else if (p.right == null) {
+            p = p.left;   // Has one branch on the left only
+        } else {
+            // Handle the case when the node has two branches.
+            Node minNodeR = min(p.right);  // find the min of the right subtree
+            p.key = minNodeR.key;
+            p.value = minNodeR.value;
+            removeNode(minNodeR);
+        }
+        size -= 1;
+    }
+
+    /** Return the minimum node of the tree. */
     private Node min(Node p) {
         if (p == null) {
             return null;
-        } else if (p.right == null) {
+        } else if (p.left == null) {
             return p;
         } else {
-            return min(p.right);
-        }
-    }
-
-    /** Remove the minimum node.
-     * This is used as a helper method for the remove
-     * method, therefore no size change happens here. */
-    private void removeMin(Node minNode) {
-        if (minNode.right == null) {
-            minNode = null;
-        } else {
-            minNode = minNode.right;
+            return min(p.left);
         }
     }
 
@@ -195,8 +185,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     public V remove(K key, V value) {
         V currentValue = get(key);
         if (currentValue.equals(value)) {
-            root = removeHelper(key, root);
-            size -= 1;
+            removeHelper(key, root);
             return value;
         }
         return null;
