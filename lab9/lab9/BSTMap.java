@@ -162,7 +162,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             // Handle the case when the node has two branches.
             Node minNodeR = min(p.right);  // find the min of the right subtree
             minNodeR.left = p.left;
-            minNodeR.right= p.right;
             p = minNodeR;
         }
         return p;
@@ -172,10 +171,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private Node min(Node p) {
         if (p == null) {
             return null;
-        } else if (p.left == null && p.right == null) {
-            return p;
         } else if (p.left == null) {
-            return min(p.right);
+            return p;
         } else {
             return min(p.left);
         }
