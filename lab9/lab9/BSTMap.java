@@ -123,7 +123,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     public V remove(K key) {
         V value = get(key);
         if (value != null) {
-            removeHelper(key, root);
+            root = removeHelper(key, root);
             size -= 1;
         }
         return value;
@@ -161,9 +161,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else {
             // Handle the case when the node has two branches.
             Node minNodeR = min(p.right);  // find the min of the right subtree
-            p.key = minNodeR.key;
-            p.value = minNodeR.value;
-            removeNode(minNodeR);
+            minNodeR.left = p.left;
+            minNodeR.right= p.right;
+            p = minNodeR;
         }
         return p;
     }
@@ -172,6 +172,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private Node min(Node p) {
         if (p == null) {
             return null;
+        } else if (p.left == null && p.right == null) {
+            return p;
         } else if (p.left == null) {
             return min(p.right);
         } else {
