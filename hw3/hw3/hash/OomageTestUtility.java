@@ -1,8 +1,6 @@
 package hw3.hash;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class OomageTestUtility {
 
@@ -23,7 +21,7 @@ public class OomageTestUtility {
         int zeroOomages = 0;
         int exceedMasOomages = 0;
         double maxNumOomages = oomages.size() * 1.0 / 2.5;
-        for (int i = 0; i < M; i += 1){
+        for (int i = 0; i < M; i += 1) {
             if (countEachBucket[i] == 0) {
                 return false;
             } else if (countEachBucket[i] > maxNumOomages) {
