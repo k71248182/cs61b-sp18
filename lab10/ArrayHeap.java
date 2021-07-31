@@ -197,13 +197,24 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public void changePriority(T item, double priority) {
+        // Find the index of this item.
         int index = find(item);
+        // If the item cannot be found, do nothing.
         if (index == 0) {
             return;
         }
+        // If there is only one item ind queue, update its priority.
+        if (size == 1) {
+            contents[1] = new Node(item, priority);
+            return;
+        }
+        // Otherwise, switch this item to the end and delete it.
         swap(index, size);
         contents[size] = null;
         size -= 1;
+        // Sink the switched item to proper position.
+        sink(index);
+        // Add this item again with the new priority.
         insert(item, priority);
     }
 
@@ -449,6 +460,23 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             assertEquals(expected[i], pq.removeMin());
             i += 1;
         }
+    }
+
+    @Test
+    public void testChangePriority() {
+        ExtrinsicPQ<String> pq = new ArrayHeap<>();
+        pq.insert("c", 3);
+        pq.insert("i", 9);
+        pq.insert("g", 7);
+        pq.insert("d", 4);
+        pq.insert("a", 1);
+        pq.insert("h", 8);
+        pq.insert("e", 5);
+        pq.insert("b", 2);
+
+        pq.changePriority("c", 0);
+        assertEquals("c", pq.removeMin());
+
     }
 
 }
