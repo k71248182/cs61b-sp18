@@ -203,17 +203,14 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (index == 0) {
             return;
         }
-        // If there is only one item ind queue, update its priority.
-        if (size == 1) {
-            contents[1] = new Node(item, priority);
-            return;
-        }
-        // Otherwise, switch this item to the end and delete it.
+        // Switch this item to the end and delete it.
         swap(index, size);
         contents[size] = null;
         size -= 1;
         // Sink the switched item to proper position.
-        sink(index);
+        if (index < size) {
+            sink(index);
+        }
         // Add this item again with the new priority.
         insert(item, priority);
     }
