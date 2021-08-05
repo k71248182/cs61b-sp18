@@ -1,9 +1,6 @@
 package hw4.puzzle;
 
-import edu.princeton.cs.introcs.In;
 import edu.princeton.cs.algs4.Queue;
-
-import java.lang.IndexOutOfBoundsException;
 
 public class Board implements WorldState {
 
@@ -30,7 +27,7 @@ public class Board implements WorldState {
         if (i < 0 || j < 0 || i > max || j > max) {
             throw new IndexOutOfBoundsException();
         }
-        if(board[i][j] == BLANK) {
+        if (board[i][j] == BLANK) {
             return 0;
         } else {
             return board[i][j];
@@ -106,8 +103,8 @@ public class Board implements WorldState {
                 if (tileNum > 0) {
                     int targetRow = getCorrectRow(tileNum);
                     int targetColumn = getCorrectColumn(tileNum);
-                    distance += Math.abs(i - targetRow) +
-                            Math.abs(j - targetColumn);
+                    distance += Math.abs(i - targetRow)
+                            + Math.abs(j - targetColumn);
                 }
             }
         }
@@ -163,7 +160,7 @@ public class Board implements WorldState {
         s.append(N + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", tileAt(i,j)));
+                s.append(String.format("%2d ", tileAt(i, j)));
             }
             s.append("\n");
         }

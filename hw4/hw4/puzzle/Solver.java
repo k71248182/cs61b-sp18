@@ -1,7 +1,6 @@
 package hw4.puzzle;
 import edu.princeton.cs.algs4.MinPQ;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Solver {
@@ -82,22 +81,22 @@ public class Solver {
     }
 
     /** Return the number of total things ever enqueued in the MinPQ. */
-    public int enqueued() {
+    /* public int enqueued() {
         return enqueued;
-    }
+    } */
 
     /* Returns a sequence of WorldStates from the initial WorldState
     to the solution.
      */
     public Iterable<WorldState> solution() {
 
-        ArrayList<WorldState> solution = new ArrayList<>();
+        ArrayList<WorldState> steps = new ArrayList<>();
         SearchNode node = this.solution;
         while (node != null) {
-            solution.add(0, node.worldState);
+            steps.add(0, node.worldState);
             node = node.previousNode;
         }
-        return solution;
+        return steps;
     }
 
 }
