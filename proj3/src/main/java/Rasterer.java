@@ -175,21 +175,13 @@ public class Rasterer {
 
     /** Return the x index of the image file that contains the
      * input pixel.
-     * Return -1 if the requested point is out of boundary.
      * @param level
      * @param lon
      * @return
      */
     private int getImgX(int level, double lon) {
-        int maxX = (int) Math.pow(2, level) - 1;
-        for (int x = 0; x <= maxX; x += 1) {
-            double left = ULLON + x * levelLonDDP[level] * 256;
-            double right = left + levelLonDDP[level] * 256;
-            if (left <= lon && right >= lon) {
-                return x;
-            }
-        }
-        return -1;
+        int x = (int) Math.floor((lon - ULLON) / (256 * levelLonDDP[level]));
+        return x;
     }
 
     /** Return the y index of the image file that contains the
@@ -200,15 +192,8 @@ public class Rasterer {
      * @return
      */
     private int getImgY(int level, double lat) {
-        int maxY = (int) Math.pow(2, level) - 1;
-        for (int y = 0; y <= maxY; y += 1) {
-            double top = ULLAT - y * levelLatDDP[level] * 256;
-            double bottom = top - levelLatDDP[level] * 256;
-            if (bottom <= lat && top >= lat) {
-                return y;
-            }
-        }
-        return -1;
+        int y = (int) Math.floor((ULLAT - lat) / (256 * levelLatDDP[level]));
+        return y;
     }
 
     /** Return the full name of image file for the given
