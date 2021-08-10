@@ -231,7 +231,6 @@ public class Rasterer {
                 int j = x - minX;
                 int i = y - minY;
                 renderGrid[i][j] = imgFile;
-                System.out.println(imgFile);
             }
         }
         return renderGrid;

@@ -6,7 +6,8 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -20,6 +21,78 @@ import java.util.ArrayList;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
+    //private ArrayList<Vertex> vertices;
+    private HashMap<Long, Vertex> vertices;
+
+    class Vertex {
+        Long id;
+        double lat;
+        double lon;
+        String name;
+        private ArrayList<Edge> edges;
+
+        Vertex(Long id, double lat, double lon) {
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+            edges = new ArrayList<>();
+        }
+
+        void addLocation(String location) {
+            name = location;
+        }
+
+        void addEdge(Vertex v, String roadName) {
+            Edge edge = new Edge(this, v, 1, roadName);
+            edges.add(edge);
+        }
+
+        void removeEdge() {
+
+        }
+
+        ArrayList<Edge> getEdges() {
+            return edges;
+        }
+
+        ArrayList<Long> adjacent() {
+            ArrayList<Long> adjacentVertices = new ArrayList<>();
+            for (Edge edge : edges) {
+                adjacentVertices.add(edge.end.id);
+            }
+            return adjacentVertices;
+        }
+    }
+
+    class Edge {
+        private Vertex start;
+        private Vertex end;
+        private int weight;
+        private String roadName;
+
+        Edge(Vertex startV, Vertex endV, int weight, String name) {
+            start = startV;
+            end = endV;
+            this.weight = weight;
+            this.roadName = name;
+        }
+
+        Vertex getStart() {
+            return start;
+        }
+
+        Vertex getEnd() {
+            return end;
+        }
+
+        int getWeight() {
+            return weight;
+        }
+
+        String getRoadName() {
+            return roadName;
+        }
+    }
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -27,6 +100,7 @@ public class GraphDB {
      * @param dbPath Path to the XML file to be parsed.
      */
     public GraphDB(String dbPath) {
+        vertices = new HashMap<>();
         try {
             File inputFile = new File(dbPath);
             FileInputStream inputStream = new FileInputStream(inputFile);
@@ -57,7 +131,16 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
+        List<Long> removeNodes = new ArrayList<>();
+        for (Long node : vertices()) {
+            Vertex v = vertices.get(node);
+            if (v.getEdges().size() == 0) {
+                removeNodes.add(node);
+            }
+        }
+        for (Long node : removeNodes) {
+            vertices.remove(node);
+        }
     }
 
     /**
@@ -65,8 +148,7 @@ public class GraphDB {
      * @return An iterable of id's of all vertices in the graph.
      */
     Iterable<Long> vertices() {
-        //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return vertices.keySet();
     }
 
     /**
@@ -75,7 +157,8 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        Vertex vertex = vertices.get(v);
+        return vertex.adjacent();
     }
 
     /**
@@ -136,7 +219,19 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        double minDistance = Double.MAX_VALUE;
+        long closestNode = 0;
+        for (Long nodeID : vertices()) {
+            Vertex v = vertices.get(nodeID);
+            double lonV = v.lon;
+            double latV = v.lat;
+            double distance = distance(lon, lat, lonV, latV);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestNode = nodeID;
+            }
+        }
+        return closestNode;
     }
 
     /**
@@ -145,7 +240,8 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        Vertex vertex = vertices.get(v);
+        return vertex.lon;
     }
 
     /**
@@ -154,6 +250,32 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        Vertex vertex = vertices.get(v);
+        return vertex.lat;
+    }
+
+    /** add a vertex to graph. */
+    Vertex addVertex(Long id, double lat, double lon) {
+        Vertex v = new Vertex(id, lat, lon);
+        vertices.put(id, v);
+        return v;
+    }
+
+    /** add an edge to graph. */
+    void addEdge(Vertex v1, Vertex v2, String roadName) {
+        v1.addEdge(v2, roadName);
+        v2.addEdge(v1, roadName);
+    }
+
+    /** Add a highway to graph. */
+    void addWay(List<Long> nodeIDs, String roadName) {
+        int n = nodeIDs.size();
+        for (int i = 0; i < n - 1 ; i += 1) {
+            Long startNodeID = nodeIDs.get(i);
+            Long endNodeID = nodeIDs.get(i + 1);
+            Vertex startV = vertices.get(startNodeID);
+            Vertex endV = vertices.get(endNodeID);
+            addEdge(startV, endV, roadName);
+        }
     }
 }
