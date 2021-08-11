@@ -1,9 +1,4 @@
-import org.eclipse.jetty.server.session.SessionHandler;
 
-import javax.swing.plaf.metal.MetalTheme;
-import java.io.FileInputStream;
-import java.security.UnresolvedPermission;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,19 +85,19 @@ public class Rasterer {
         int maxX = getImgX(level, lowerRightLongitude);
         int maxY = getImgY(level, lowerRightLatitude);
 
-        double raster_ul_lat = getTopLatitude(level, minY);
-        double raster_ul_lon = getLeftLongitude(level, minX);
-        double raster_lr_lat = getBottomLatitude(level, maxY);
-        double raster_lr_lon = getRightLongitude(level, maxX);
+        double rasterUllat = getTopLatitude(level, minY);
+        double rasterUllon = getLeftLongitude(level, minX);
+        double rasterLrlat = getBottomLatitude(level, maxY);
+        double rasterLrlon = getRightLongitude(level, maxX);
 
         String[][] renderGrid = getRenderGrid(level, minX, minY, maxX, maxY);
 
         // Prepare output parameters
         Map<String, Object> results = new HashMap<>();
-        results.put("raster_ul_lon", raster_ul_lon);
-        results.put("raster_ul_lat", raster_ul_lat);
-        results.put("raster_lr_lon", raster_lr_lon);
-        results.put("raster_lr_lat", raster_lr_lat);
+        results.put("raster_ul_lon", rasterUllon);
+        results.put("raster_ul_lat", rasterUllat);
+        results.put("raster_lr_lon", rasterLrlon);
+        results.put("raster_lr_lat", rasterLrlat);
         results.put("depth", level);
         results.put("query_success", true);
         results.put("render_grid", renderGrid);
