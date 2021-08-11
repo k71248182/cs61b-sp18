@@ -80,7 +80,7 @@ public class GraphBuildingHandler extends DefaultHandler {
             Long id = Long.parseLong(attributes.getValue("id"));
             double lon = Double.parseDouble(attributes.getValue("lon"));
             double lat = Double.parseDouble(attributes.getValue("lat"));
-            lastVertex = g.addVertex(id, lat, lon);;
+            lastVertex = g.addVertex(id, lat, lon);
 
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */
