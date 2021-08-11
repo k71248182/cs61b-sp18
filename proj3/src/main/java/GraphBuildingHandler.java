@@ -2,8 +2,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.awt.*;
-import java.util.*;
+import java.util.Set;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 /**

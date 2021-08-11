@@ -6,8 +6,9 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -264,7 +265,7 @@ public class GraphDB {
     /** Add a highway to graph. */
     void addWay(List<Long> nodeIDs, String roadName) {
         int n = nodeIDs.size();
-        for (int i = 0; i < n - 1 ; i += 1) {
+        for (int i = 0; i < n - 1; i += 1) {
             Long startNodeID = nodeIDs.get(i);
             Long endNodeID = nodeIDs.get(i + 1);
             Vertex startV = vertices.get(startNodeID);
