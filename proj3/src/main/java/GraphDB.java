@@ -43,7 +43,7 @@ public class GraphDB {
         }
 
         void addEdge(Vertex v, String roadName) {
-            Edge edge = new Edge(this, v, 1, roadName);
+            Edge edge = new Edge(this, v, roadName);
             edges.add(edge);
         }
 
@@ -67,13 +67,11 @@ public class GraphDB {
     class Edge {
         private Vertex start;
         private Vertex end;
-        private int weight;
         private String roadName;
 
-        Edge(Vertex startV, Vertex endV, int weight, String name) {
+        Edge(Vertex startV, Vertex endV, String name) {
             start = startV;
             end = endV;
-            this.weight = weight;
             this.roadName = name;
         }
 
@@ -83,10 +81,6 @@ public class GraphDB {
 
         Vertex getEnd() {
             return end;
-        }
-
-        int getWeight() {
-            return weight;
         }
 
         String getRoadName() {
@@ -277,5 +271,10 @@ public class GraphDB {
             Vertex endV = vertices.get(endNodeID);
             addEdge(startV, endV, roadName);
         }
+    }
+
+    /** Return total number of vertices in the graph. */
+    double numVertices() {
+        return vertices.keySet().size();
     }
 }

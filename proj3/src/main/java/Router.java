@@ -1,5 +1,8 @@
-import java.util.List;
-import java.util.Objects;
+import javax.sound.sampled.TargetDataLine;
+import java.awt.desktop.AppReopenedEvent;
+import java.io.Serializable;
+import java.lang.annotation.Target;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +15,23 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+
+    private static class SearchNode  implements Comparable<SearchNode> {
+
+        private Long v;
+        private double priority;
+
+        public SearchNode(Long v, double priority) {
+            this.v = v;
+            this.priority = priority;
+        }
+
+        @Override
+        public int compareTo(SearchNode v2) {
+            return (int) Math.signum(priority - v2.priority);
+        }
+    }
+
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,8 +45,86 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+
+        // start and target nodes closest to the given location
+        Long start = g.closest(stlon, stlat);
+        Long target = g.closest(destlon, destlat);
+
+        // initialization
+        boolean targetFound = false;
+        Map<Long, Double> dist = new HashMap<>();        // distance to start
+        Map<Long, Long> edgeTo = new HashMap<>();        // where the node is coming from
+        Set<Long> marked = new HashSet<>();              // nodes that have been marked
+        List<Long> path = new ArrayList<>();             // nodes in the shortest path
+        PriorityQueue<SearchNode> queue = new PriorityQueue<>();   // fringe
+
+        // Add start node to fringe
+        SearchNode searchNode = new SearchNode(start, 0);  // h does not matter for start.
+        queue.add(searchNode);
+        dist.put(start, 0.0);
+
+        // To be used in the loop to represent the most recently marked vertex.
+        Long v = start;
+
+        // A* approach to find the shortest path
+        while (queue.size() > 0) {
+            SearchNode node = queue.remove();
+            v = node.v;
+
+            // Skip this node if it is already marked.
+            if (marked.contains(v)) {
+                continue;
+            }
+
+            // Mark the node.
+            marked.add(v);
+            if (v.equals(target)) {
+                targetFound = true;
+                break;
+            }
+
+            // Add all neighbors to the priority queue
+            for (Long neighbor : g.adjacent(v)) {
+                // do not need to add the previous visited node.
+                if (!marked.contains(neighbor)) {
+                    double weight = g.distance(v, neighbor);
+                    double distance = dist.get(v) + weight;
+                    double h = g.distance(neighbor, target);
+                    double priority = distance + h;
+
+                    // relax the edge
+                    boolean relaxEdge = false;
+                    if (!dist.containsKey(neighbor)) {
+                        relaxEdge = true;
+                    } else if (distance < dist.get(neighbor)) {
+                        relaxEdge = true;
+                    }
+                    if (relaxEdge) {
+                        dist.put(neighbor, distance);
+                        edgeTo.put(neighbor, v);
+                        SearchNode neighborNode = new SearchNode(neighbor, priority);
+                        queue.add(neighborNode);
+                    }
+                }
+            }
+        }
+
+        if (true) {
+            Stack<Long> nodes = new Stack<>();
+            while (v != start) {
+                nodes.push(v);
+                v = edgeTo.get(v);
+            }
+            nodes.push(start);
+
+            while (nodes.size() > 0) {
+                path.add(nodes.pop());
+            }
+        }
+        return path;
     }
+
+
 
     /**
      * Create the list of directions corresponding to a route on the graph.
