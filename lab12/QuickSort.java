@@ -1,4 +1,9 @@
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
+
+import javax.print.DocFlavor;
+
+import static org.junit.Assert.assertEquals;
 
 public class QuickSort {
     /**
@@ -47,13 +52,58 @@ public class QuickSort {
     private static <Item extends Comparable> void partition(
             Queue<Item> unsorted, Item pivot,
             Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
-        // Your code here!
+
+        while (!unsorted.isEmpty()) {
+            Item item = unsorted.dequeue();
+            if (item.compareTo(pivot) > 0) {
+                greater.enqueue(item);
+            } else if (item.compareTo(pivot) == 0) {
+                equal.enqueue(item);
+            } else {
+                less.enqueue(item);
+            }
+        }
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
-        // Your code here!
+
+        if (items.isEmpty()) {
+            return items;
+        }
+
+        if (items.size() == 1) {
+            return items;
+        }
+
+        Item pivot = getRandomItem(items);
+        Queue<Item> less = new Queue<>();
+        Queue<Item> equal = new Queue<>();
+        Queue<Item> greater = new Queue<>();
+
+        partition(items, pivot, less, equal, greater);
+        less = quickSort(less);
+        greater = quickSort(greater);
+
+        items = catenate(less, equal);
+        items = catenate(items, greater);
+
         return items;
     }
+
+    public static void main(String[] args) {
+        Queue<Integer> numbers = new Queue<Integer>();
+        numbers.enqueue(4);
+        numbers.enqueue(5);
+        numbers.enqueue(100);
+        numbers.enqueue(-3);
+        numbers.enqueue(26);
+        System.out.println(numbers.toString());
+
+        Queue<Integer> actual = quickSort(numbers);
+        System.out.println(actual.toString());
+    }
+
+
 }

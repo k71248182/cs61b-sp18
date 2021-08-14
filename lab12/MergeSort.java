@@ -1,4 +1,6 @@
 import edu.princeton.cs.algs4.Queue;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class MergeSort {
     /**
@@ -34,8 +36,14 @@ public class MergeSort {
     /** Returns a queue of queues that each contain one item from items. */
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
-        // Your code here!
-        return null;
+
+        Queue<Queue<Item>> queues = new Queue<>();
+        for (Item item : items) {
+            Queue<Item> itemQueue = new Queue<>();
+            itemQueue.enqueue(item);
+            queues.enqueue(itemQueue);
+        }
+        return queues;
     }
 
     /**
@@ -53,14 +61,56 @@ public class MergeSort {
      */
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
-        // Your code here!
-        return null;
+
+        Queue<Item> mergeSortedQueue = new Queue<Item>();
+        while (!(q1.isEmpty() & q2.isEmpty())) {
+            mergeSortedQueue.enqueue(getMin(q1, q2));
+        }
+        return mergeSortedQueue;
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
-        // Your code here!
-        return items;
+        if (items.isEmpty()) {
+            return null;
+        }
+        Queue<Queue<Item>> mergeSortQueues = makeSingleItemQueues(items);
+        while (mergeSortQueues.size() > 1) {
+            Queue<Item> q1 = mergeSortQueues.dequeue();
+            Queue<Item> q2 = mergeSortQueues.dequeue();
+            Queue<Item> mergedQueue = mergeSortedQueues(q1, q2);
+            mergeSortQueues.enqueue(mergedQueue);
+        }
+        return mergeSortQueues.dequeue();
+    }
+
+    @Test
+    public static void main(String[] args) {
+        Queue<String> students = new Queue<String>();
+        students.enqueue("Alice");
+        students.enqueue("Vanessa");
+        students.enqueue("Ethan");
+        students.enqueue("Max");
+        students.enqueue("Jason");
+        Queue<String> actual = mergeSort(students);
+
+        System.out.println(students.toString());
+        System.out.println(actual.toString());
+
+        Queue<String> expected = new Queue<String>();
+        expected.enqueue("Alice");
+        expected.enqueue("Ethan");
+        expected.enqueue("Jason");
+        expected.enqueue("Max");
+        expected.enqueue("Vanessa");
+
+        assertEquals("Number of students did not match",
+                actual.size(), expected.size());
+
+        while (!expected.isEmpty()) {
+            assertEquals("Student name did not match",
+                    expected.dequeue(), actual.dequeue());
+        }
     }
 }
