@@ -66,8 +66,8 @@ public class CountingSort {
      * @param arr int array that will be sorted
      */
     public static int[] betterCountingSort(int[] arr) {
-        // Find min and max. If min >= 0, set min equal to zero.
-        int max = Integer.MIN_VALUE;
+        // Find min and max. Min is capped at zero, and Max is floored at zero.
+        int max = 0;
         int min = 0;
         for (int i : arr) {
             max = max > i ? max : i;
