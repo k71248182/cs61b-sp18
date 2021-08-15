@@ -66,7 +66,55 @@ public class CountingSort {
      * @param arr int array that will be sorted
      */
     public static int[] betterCountingSort(int[] arr) {
-        // TODO make counting sort work with arrays containing negative numbers.
-        return null;
+        // Find min and max. If min >= 0, set min equal to zero.
+        int max = Integer.MIN_VALUE;
+        int min = 0;
+        for (int i : arr) {
+            max = max > i ? max : i;
+            min = min < i ? min : i;
+        }
+
+        /** Gather all the counts for each value.
+         * Store non-negative and negative buckets into two separate arrays.
+         */
+        int[] countNonNegative = new int[max + 1];
+        int[] countNegative = new int[-min + 1];
+        for (int i : arr) {
+            if (i >= 0) {
+                countNonNegative[i]++;
+            } else {
+                countNegative[-i]++;
+            }
+        }
+
+        /** Values of start represent the first position in the sorted array for
+         * that bucket.
+         */
+        int[] startNonNegative = new int[max + 1];
+        int[] startNegative = new int[-min + 1];
+        int pos = 0;
+        for (int i = min; i < 0; i += 1) {
+            startNegative[-i] = pos;
+            pos += countNegative[-i];
+        }
+        for (int i = 0; i <= max ; i += 1) {
+            startNonNegative[i] = pos;
+            pos += countNonNegative[i];
+        }
+
+        int[] sorted = new int[arr.length];
+        for (int i = 0; i < arr.length; i += 1) {
+            int item = arr[i];
+            if (item >= 0) {
+                int place = startNonNegative[item];
+                sorted[place] = item;
+                startNonNegative[item] += 1;
+            } else {
+                int place = startNegative[-item];
+                sorted[place] = item;
+                startNegative[-item] += 1;
+            }
+        }
+        return sorted;
     }
 }
