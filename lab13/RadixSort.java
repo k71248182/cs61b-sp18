@@ -16,19 +16,60 @@ public class RadixSort {
      * @return String[] the sorted array
      */
     public static String[] sort(String[] asciis) {
-        // TODO: Implement LSD Sort
-        return null;
+
+        // Find the length of the longest string.
+        int max = 0;
+        for (String s : asciis) {
+            int l = s.length();
+            max = max > l ? max : l;
+        }
+
+        String[] sorted = asciis.clone();
+        for (int index = max - 1; index >= 0; index -= 1) {
+            sortHelperLSD(sorted, index);
+        }
+
+        return sorted;
     }
 
     /**
      * LSD helper method that performs a destructive counting sort the array of
      * Strings based off characters at a specific index.
      * @param asciis Input array of Strings
-     * @param index The position to sort the Strings on.
+     * @param index The position to sort the Strings on (staring from 0).
      */
     private static void sortHelperLSD(String[] asciis, int index) {
-        // Optional LSD helper method for required LSD radix sort
-        return;
+        int counts[] = new int[256];
+        int placeholder = 0;         // number of shorter strings
+        for (String s : asciis) {
+            if (s.length() < index + 1) {
+                placeholder += 1;
+            } else {
+                int i = s.charAt(index);
+                counts[i] += 1;
+            }
+        }
+
+        int[] starts = new int[256];
+        int pos = placeholder;
+        for (int i = 0; i < starts.length; i += 1) {
+            starts[i] = pos;
+            pos += counts[i];
+        }
+
+        String [] unSorted = asciis.clone();
+        placeholder = 0;
+        for (String s : unSorted) {
+            if (s.length() < index + 1) {
+                asciis[placeholder] = s;
+                placeholder += 1;
+            } else {
+                int i = s.charAt(index);
+                int place = starts[i];
+                asciis[place] = s;
+                starts[i] += 1;
+            }
+        }
     }
 
     /**
